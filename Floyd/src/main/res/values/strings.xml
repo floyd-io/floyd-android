@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">myapp</string>
+
+    <string-array name="connection_types">
+        <item>Socket</item>
+        <item>HttpURLConnection</item>
+        <item>DefaultHttpClient</item>
+    </string-array>
+
+</resources>
