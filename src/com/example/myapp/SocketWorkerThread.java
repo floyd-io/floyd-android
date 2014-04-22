@@ -80,7 +80,7 @@ public class SocketWorkerThread extends Thread {
 
         try
         {
-            Log.d("TEST", "Connecting...");
+            Log.d("TEST", "Connecting trough socket to host (" + host + ")...");
             InetAddress serverAddress = InetAddress.getByName(host);
             //socket = new Socket(serverAddress, 1337);
 
@@ -118,7 +118,7 @@ public class SocketWorkerThread extends Thread {
                 Log.d("TEST", Integer.toString(readCount) + " chars received");
 
                 //parse this json into business objs.
-                //Chunks can be determined since each one starts with an hex indicating it size, a carriage return
+                //Chunks CAN be determined since each one starts with an hex indicating it size, a carriage return
                 //and then the message. When the message ends there is another carriage return.
                 //a size of 0 indicates that the response is over and no more chunks will come.
                 //Since the server closes the connection after suck a chunk, we will read a -1 (EOF) on readCount

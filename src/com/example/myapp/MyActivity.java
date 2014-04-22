@@ -45,6 +45,8 @@ public class MyActivity extends Activity {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spConnectionType.setAdapter(adapter);
 
+        txtIpAddress.setText("192.168.1.105");
+
         final Runnable runOnConnect = new Runnable() {
             @Override
             public void run() {
@@ -81,6 +83,7 @@ public class MyActivity extends Activity {
                     {
                         case 0:{
                             //Socket
+
                             SocketWorkerThread socketWorkerThread = new SocketWorkerThread(txtIpAddress.getText().toString(),
                                     onNewDataHandler, runOnConnect, runOnDisconnect);
 
@@ -92,15 +95,25 @@ public class MyActivity extends Activity {
                         case 1: {
                             //HttpURLConnection
 
+                            //System.setProperty("http.keepAlive", "false");
                             HTTPUrlConnectionWorkerThread httpUrlConnectionWorkerThread = new HTTPUrlConnectionWorkerThread(txtIpAddress.getText().toString(),
                                     onNewDataHandler, runOnConnect, runOnDisconnect);
+
                             stopListening = httpUrlConnectionWorkerThread.getDisconnect();
                             httpUrlConnectionWorkerThread.start();
+
+                            //new BackGroundTask().execute("http://192.168.1.105:1337/part2.html");
 
                             break;
                         }
                         case 2: {
                             //DefaultHttpClient
+
+                            DefaultHttpClientWorkerThread defaultHttpClientWorkerThread = new DefaultHttpClientWorkerThread(txtIpAddress.getText().toString(),
+                                    onNewDataHandler, runOnConnect, runOnDisconnect);
+
+                            stopListening = defaultHttpClientWorkerThread.getDisconnect();
+                            defaultHttpClientWorkerThread.start();
 
                             break;
                         }
@@ -186,23 +199,20 @@ public class MyActivity extends Activity {
 
         private Exception exception;
 
-        private byte[] readStream(InputStream in)
-                throws IOException {
+        private byte[] readStream(InputStream in) throws IOException {
             byte[] buf = new byte[1024];
             int count = 0;
             ByteArrayOutputStream out = new ByteArrayOutputStream(1024);
 
             String msg;
-            //read bloquea hasta el close remoto del stream
+
             while ((count = in.read(buf)) != -1) {
                 //mando a la UI mi respuesta parcial
                 //publishProgress(new String(Charset.defaultCharset().decode(ByteBuffer.wrap(buf)).toString()));
                 msg = new String(buf, 0, count);
-                Log.d("TEST", Integer.toString(count));
-                Log.d("TEST", msg);
-                //Log.d("TEST", Integer.toString(msg));
-                //voy juntando el total
-                //out.write(buf, 0, count);
+                publishProgress(msg);
+
+                Log.d("TEST", "AsyncTask Received Data: " + msg);
             }
 
             return out.toByteArray();
@@ -215,9 +225,11 @@ public class MyActivity extends Activity {
 
         protected Integer doInBackground(String... urls) {
             try {
+                Log.d("TEST", "AsyncTask Connecting...");
                 HttpURLConnection connection = null;
                 connection = (HttpURLConnection) new URL(urls[0]).openConnection();
 
+                Log.d("TEST", "AsyncTask Connected...");
                 //para servers que soporten RANGE (testear si lo soportan con un HEAD call y mirar los headers)
                 //connection.addRequestProperty("RANGE", "bytes=0-1024");
 
@@ -228,6 +240,9 @@ public class MyActivity extends Activity {
                 int retValue = connection.getResponseCode();
 
                 BufferedInputStream in = new BufferedInputStream(connection.getInputStream());
+
+                Log.d("TEST", "AsyncTask Listening...");
+
                 String resp = new String(readStream(in), "UTF-8");
 
                 //Log.d("TEST", Integer.toString(resp.length()));

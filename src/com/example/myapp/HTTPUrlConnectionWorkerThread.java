@@ -46,8 +46,14 @@ public class HTTPUrlConnectionWorkerThread extends Thread {
         public void run() {
             try
             {
+                Log.d("TEST", "Attempting to disconnect...");
+
+
+                //NO FUCKING WAY TO DO THIS!
+
+                //inputStream.close();
                 //connection.disconnect();
-                inputStream.close();
+                //connection.setReadTimeout(1);
             }
             catch (Exception E)
             {
@@ -64,7 +70,7 @@ public class HTTPUrlConnectionWorkerThread extends Thread {
     @Override
     public void run(){
 
-        Log.d("TEST", "Connecting...");
+        Log.d("TEST", "Connecting through HttpUrlConnection to Host (" + host + ")");
         connection = null;
 
         try
@@ -72,9 +78,11 @@ public class HTTPUrlConnectionWorkerThread extends Thread {
             URL url = new URL("http", host, 1337, "part2.html");
             connection = (HttpURLConnection) url.openConnection();
 
-            //connection.setConnectTimeout(50000);
+            //timeout para abrir la conexion...
+            connection.setConnectTimeout(5000);
+
             //connection.setReadTimeout(50000);
-            //connection.connect();
+            connection.connect();
 
             Log.d("TEST", "Connected!");
             observerHandler.post(onConnect);
@@ -82,8 +90,8 @@ public class HTTPUrlConnectionWorkerThread extends Thread {
             //should be 200
             int retValue = connection.getResponseCode();
 
-            //inputStream = connection.getInputStream();
-            BufferedInputStream inputStream = new BufferedInputStream(connection.getInputStream());
+            inputStream = connection.getInputStream();
+            //BufferedInputStream inputStream = new BufferedInputStream(connection.getInputStream());
 
             byte[] buffer = new byte[1024];
             int readCount = 0;
@@ -100,17 +108,22 @@ public class HTTPUrlConnectionWorkerThread extends Thread {
                 notifyUI(msg);
             }
 
+            Log.d("TEST", "Disconnecting...");
             inputStream.close();
         }
         catch (Exception E){
-            Log.d("TEST", "SocketWorker blown! Exc Class: " + E.getClass().getName() + " Message:" +  E.getMessage());
-            observerHandler.post(onDisconnect);
+            Log.d("TEST", "HttpUrlConnectionWorker blown! Exc Class: " + E.getClass().getName() + " Message:" +  E.getMessage());
         }
         finally{
+            observerHandler.post(onDisconnect);
+
             if (connection != null) {
-                observerHandler.post(onDisconnect);
 
                 //frees the instance in the pool to reuse
+                //
+                //from android doc:
+                //Unlike other Java implementations, this will not necessarily close socket connections that can be reused.
+                //You can disable all connection reuse by setting the http.keepAlive system property to false before issuing any HTTP requests.
                 connection.disconnect();
 
                 Log.d("TEST", "Disconnected (like a Sir)");
