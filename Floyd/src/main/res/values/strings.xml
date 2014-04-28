@@ -6,6 +6,7 @@
         <item>Socket</item>
         <item>HttpURLConnection</item>
         <item>DefaultHttpClient</item>
+        <item>Pimped HttpClient</item>
     </string-array>
 
 </resources>

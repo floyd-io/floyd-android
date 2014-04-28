@@ -117,6 +117,17 @@ public class MyActivity extends Activity {
 
                             break;
                         }
+
+                        case 3: {
+                            //PimpedHttpClientWorkerThread
+                            PimpedHttpClientWorkerThread pimpedHttpClientWorkerThread = new PimpedHttpClientWorkerThread(txtIpAddress.getText().toString(),
+                                    onNewDataHandler, runOnConnect, runOnDisconnect);
+
+                            stopListening = pimpedHttpClientWorkerThread.getDisconnect();
+                            pimpedHttpClientWorkerThread.start();
+
+                            break;
+                        }
                     }
 
 
