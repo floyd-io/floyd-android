@@ -120,6 +120,7 @@ public class PimpedHttpClientWorkerThread extends Thread {
         }
         catch (Exception E)
         {
+            observerHandler.post(onDisconnect);
             Log.d("TEST", E.getMessage());
         }
         finally {
