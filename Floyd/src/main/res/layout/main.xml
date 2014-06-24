@@ -15,20 +15,39 @@
         android:id="@+id/connectionType"
         android:layout_marginTop="3dp"
         android:layout_toRightOf="@+id/ipAddress" />
+    <TextView android:id="@+id/txtResponse"
+        android:layout_alignLeft="@id/ipAddress"
+        android:layout_below="@id/ipAddress"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp" />
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
+        android:layout_above="@+id/panelPost"
+        android:layout_marginBottom="10dp"
         android:layout_centerHorizontal="true"
         android:text="Connect"
         android:id="@+id/btnConnect"/>
-
-    <TextView android:id="@+id/txtResponse"
-            android:layout_alignLeft="@id/ipAddress"
-            android:layout_below="@id/ipAddress"
-            android:layout_width="match_parent"
+    <RelativeLayout
+        android:id="@+id/panelPost"
+        android:layout_alignParentBottom="true"
+        android:background="@android:color/darker_gray"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+        <EditText
+            android:layout_centerVertical="true"
+            android:id="@+id/txtPostMessage"
+            android:layout_width="250dp"
+            android:layout_height="wrap_content" />
+        <Button
+            android:id="@+id/btnPost"
+            android:layout_alignParentRight="true"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-        android:layout_marginTop="20dp" />
+            android:text="Post!"
+            android:layout_toRightOf="@id/txtPostMessage"/>
+        </RelativeLayout>
 
 </RelativeLayout>
 

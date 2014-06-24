@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -24,6 +25,8 @@ public class MyActivity extends Activity {
     private TextView txtResponseView;
     private Spinner spConnectionType;
     private Button btnConnect;
+    private EditText editTextToPost;
+    private Button btnPost;
 
     private boolean connected = false;
 
@@ -39,6 +42,8 @@ public class MyActivity extends Activity {
         txtResponseView = (TextView)this.findViewById(R.id.txtResponse);
         spConnectionType = (Spinner)this.findViewById(R.id.connectionType);
         btnConnect = (Button)this.findViewById(R.id.btnConnect);
+        btnPost = (Button)this.findViewById(R.id.btnPost);
+        editTextToPost = (EditText)this.findViewById(R.id.txtPostMessage);
 
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
                 R.array.connection_types, android.R.layout.simple_spinner_item);
@@ -70,6 +75,16 @@ public class MyActivity extends Activity {
                 txtResponseView.setText((String)msg.obj);
             }
         };
+
+
+        final Runnable runOnMessagePosted = new Runnable() {
+            @Override
+            public void run() {
+                editTextToPost.setText("");
+            }
+        };
+
+        final Handler onMessagePostedHandler = new Handler();
 
         btnConnect.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -144,6 +159,18 @@ public class MyActivity extends Activity {
 
                 //ip de mi host en vbox (genymotion)
                 //new BackGroundTask().execute("http://192.168.56.1:1337/part2.html");
+            }
+        });
+
+        btnPost.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                editTextToPost.getText();
+
+                MessagePostWorkerThread messagePostWorkerThread = new MessagePostWorkerThread(txtIpAddress.getText().toString(), editTextToPost.getText().toString(),
+                        onMessagePostedHandler, runOnMessagePosted);
+                messagePostWorkerThread.start();
             }
         });
     }
