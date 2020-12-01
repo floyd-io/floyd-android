@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">floyd</string>
+
+    <string-array name="connection_types">
+        <item>Socket</item>
+        <item>HttpURLConnection</item>
+        <item>DefaultHttpClient</item>
+        <item>Pimped HttpClient</item>
+    </string-array>
+
+</resources>
